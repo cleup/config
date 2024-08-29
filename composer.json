@@ -1,0 +1,32 @@
+{
+    "name": "cleup/config",
+    "version": "1.0.1",
+    "description": "Web application configuration",
+    "keywords": [
+        "config",
+        "configuration",
+        "env",
+        "environment"
+    ],
+    "type": "library",
+    "license": "MIT",
+    "homepage": "https://github.com/cleup/config",
+    "autoload": {
+        "files": [
+            "src/Helpers.php"
+        ],
+        "psr-4": {
+            "Cleup\\Core\\Configuration\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Eduard Y",
+            "email": "dev@priveted.com"
+        }
+    ],
+    "require": {
+        "php": ">=8.1",
+        "cleup/store-manager": "^1.0"
+    }
+}
