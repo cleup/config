@@ -39,8 +39,6 @@ class Loader
      */
     public function __construct($options = array())
     {
-
-
         $this->options = array_merge(
             $this->options,
             $options
