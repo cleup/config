@@ -14,7 +14,7 @@ class Registry
     public const ROOT = '__CONFIGURATION_REGISTRY__';
 
     /**
-     *  Options Context name
+     *  Options context name
      * 
      * @var string
      */
