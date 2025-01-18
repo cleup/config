@@ -82,12 +82,19 @@ class Cache
             true
         );
         $content .= ';';
+        $file = $this->output();
+        $directory = dirname($file);
 
-        file_put_contents(
-            $this->output(),
-            $content
-        );
+        if (!is_dir($directory)) {
+            if (!@mkdir($directory, 0775, true)) {
+                throw new \Exception('Failed to create directory: ' . $directory);
+            }
+        }
 
+        if (!@file_put_contents($file, $content)) {
+            throw new \Exception('Failed to create file: ' . $$file);
+        }
+        
         return $content;
     }
 }
