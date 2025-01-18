@@ -1,6 +1,6 @@
 <?php
 
-namespace Cleup\Core\Configuration\Environment;
+namespace Cleup\Configuration\Environment;
 
 class Parser
 {

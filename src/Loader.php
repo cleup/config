@@ -1,10 +1,10 @@
 <?php
 
-namespace Cleup\Core\Configuration;
+namespace Cleup\Configuration;
 
-use Cleup\Core\Configuration\Components\Cache;
-use Cleup\Core\Configuration\Components\Registry;
-use Cleup\Core\Configuration\Environment\Env;
+use Cleup\Configuration\Components\Cache;
+use Cleup\Configuration\Components\Registry;
+use Cleup\Configuration\Environment\Env;
 
 class Loader
 {

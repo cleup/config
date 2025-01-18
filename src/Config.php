@@ -1,8 +1,8 @@
 <?php
 
-namespace Cleup\Core\Configuration;
+namespace Cleup\Configuration;
 
-use Cleup\Core\Configuration\Components\Registry;
+use Cleup\Configuration\Components\Registry;
 
 class Config
 {

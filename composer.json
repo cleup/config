@@ -16,7 +16,7 @@
             "src/Helpers.php"
         ],
         "psr-4": {
-            "Cleup\\Core\\Configuration\\": "src/"
+            "Cleup\\Configuration\\": "src/"
         }
     },
     "authors": [
