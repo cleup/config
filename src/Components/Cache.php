@@ -82,19 +82,30 @@ class Cache
             true
         );
         $content .= ';';
+        $status = true;
         $file = $this->output();
         $directory = dirname($file);
+        $isDebug = Registry::get(
+            'debug',
+            Registry::OPTIONS
+        );
 
         if (!is_dir($directory)) {
             if (!@mkdir($directory, 0775, true)) {
-                throw new \Exception('Failed to create directory: ' . $directory);
+                if ($isDebug)
+                    throw new \Exception('Failed to create directory: ' . $directory);
+
+                $status = false;
             }
         }
 
         if (!@file_put_contents($file, $content)) {
-            throw new \Exception('Failed to create file: ' . $$file);
+            if ($isDebug)
+                throw new \Exception('Failed to create file: ' . $$file);
+
+            $status = false;
         }
-        
-        return $content;
+
+        return $status;
     }
 }
