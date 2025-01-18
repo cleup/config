@@ -2,8 +2,6 @@
 
 namespace Cleup\Core\Configuration\Components;
 
-use Cleup\Helpers\Arr;
-
 class Cache
 {
     /**
@@ -71,20 +69,25 @@ class Cache
      */
     public function create()
     {
-        return Arr::write(
+        $content = '<?php' . PHP_EOL;
+        $content .= PHP_EOL .
+            "/*" . PHP_EOL .
+            "\tThe current file is generated automatically," . PHP_EOL .
+            "\tdo not make changes to it as they will be lost." . PHP_EOL .
+            "\tDelete the file and it will be recreated according to your configuration." . PHP_EOL .
+            "*/"  . PHP_EOL;
+        $content .= 'return ';
+        $content .= var_export(
             Registry::getAll(),
-            $this->output(),
-            [
-                'debug' => Registry::get(
-                    'debug',
-                    Registry::OPTIONS
-                ),
-                'comment' => PHP_EOL .
-                    "\tThe current file is generated automatically," . PHP_EOL .
-                    "\tdo not make changes to it as they will be lost." . PHP_EOL .
-                    "\tDelete the file and it will be recreated according to your configuration."
-                    . PHP_EOL
-            ]
+            true
         );
+        $content .= ';';
+
+        file_put_contents(
+            $this->output(),
+            $content
+        );
+
+        return $content;
     }
 }

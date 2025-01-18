@@ -3,11 +3,9 @@
 namespace Cleup\Core\Configuration\Environment;
 
 use Cleup\Core\Configuration\Components\Registry;
-use Cleup\Helpers\Arr;
 
 class Env
 {
-
     /**
      * Make changes to the environment
      * 
@@ -15,17 +13,16 @@ class Env
      */
     public static function write()
     {
-        Arr::map(
-            Registry::get(
-                false,
-                Registry::ENV
-            ),
-            function ($value, $key) {
-                $_ENV[$key] = $value;
-                $_SERVER[$key] = $value;
-                putenv("{$key}={$value}");
-            }
+        $env = Registry::get(
+            false,
+            Registry::ENV
         );
+
+        foreach ($env as $key => $value) {
+            $_ENV[$key] = $value;
+            $_SERVER[$key] = $value;
+            putenv("{$key}={$value}");
+        }
     }
 
     /**
