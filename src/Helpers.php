@@ -1,8 +1,8 @@
 <?php
 
-use Cleup\Core\Configuration\Components\Registry;
-use Cleup\Core\Configuration\Config;
-use Cleup\Core\Configuration\Environment\Env;
+use Cleup\Configuration\Components\Registry;
+use Cleup\Configuration\Config;
+use Cleup\Configuration\Environment\Env;
 
 if (!function_exists('config_path')) {
 

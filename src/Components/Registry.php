@@ -1,6 +1,6 @@
 <?php
 
-namespace Cleup\Core\Configuration\Components;
+namespace Cleup\Configuration\Components;
 
 use Cleup\Components\StoreManager\Store;
 

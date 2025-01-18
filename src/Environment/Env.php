@@ -1,8 +1,8 @@
 <?php
 
-namespace Cleup\Core\Configuration\Environment;
+namespace Cleup\Configuration\Environment;
 
-use Cleup\Core\Configuration\Components\Registry;
+use Cleup\Configuration\Components\Registry;
 
 class Env
 {

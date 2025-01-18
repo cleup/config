@@ -10,7 +10,7 @@ composer require cleup/config
 
 ##### Initialization
 ```php 
-$configuration = new Cleup\Core\Configuration\Loader([
+$configuration = new Cleup\Configuration\Loader([
     'debug' => false,
     'cache' => true,
     'cachePath' => __DIR__ . '/cache/config',
@@ -54,8 +54,8 @@ FLOAT=22.122002
 ##### Methods
 
 ```php
-use Cleup\Core\Configuration\Config;
-use Cleup\Core\Configuration\Environment\Env;
+use Cleup\Configuration\Config;
+use Cleup\Configuration\Environment\Env;
 
 # Get
 // where “app” is the name of the file
