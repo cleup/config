@@ -5,7 +5,6 @@ use Cleup\Configuration\Config;
 use Cleup\Configuration\Environment\Env;
 
 if (!function_exists('config_path')) {
-
     /**
      * Get the path to the configuration
      * 
@@ -13,15 +12,11 @@ if (!function_exists('config_path')) {
      */
     function config_path()
     {
-        return Registry::get(
-            'configPath',
-            Registry::OPTIONS
-        );
+        return Registry::get('configPath', Registry::OPTIONS);
     }
 }
 
 if (!function_exists('config')) {
-
     /**
      * Get configuration data
      * 
@@ -36,7 +31,6 @@ if (!function_exists('config')) {
 }
 
 if (!function_exists('env_path')) {
-
     /**
      * Get the path to the environment directory
      * 
@@ -44,15 +38,11 @@ if (!function_exists('env_path')) {
      */
     function env_path()
     {
-        return Registry::get(
-            'envPath',
-            Registry::OPTIONS
-        );
+        return Registry::get('envPath', Registry::OPTIONS);
     }
 }
 
 if (!function_exists('env')) {
-
     /**
      * Get env data
      * 
