@@ -2,110 +2,113 @@
 
 namespace Cleup\Configuration\Components;
 
+use Cleup\Cache\Drivers\LocalDriver;
+
 class Cache
 {
+    private static ?\Cleup\Cache\Cache $cacheInstance = null;
+
+    /**
+     * Get cache instance
+     * 
+     * @return \Cleup\Cache\Cache
+     */
+    private static function getCacheInstance(): \Cleup\Cache\Cache
+    {
+        if (self::$cacheInstance === null) {
+            $storagePath = Registry::get('cachePath', Registry::OPTIONS, '/tmp/cache');
+            $defaultTtl = Registry::get('cacheTtl', Registry::OPTIONS, 3600);
+
+            $driver = (new LocalDriver())
+                ->storagePath($storagePath)
+                ->defaultTtl($defaultTtl);
+
+            self::$cacheInstance = (new \Cleup\Cache\Cache($driver))
+                ->namespace('configuration');
+        }
+
+        return self::$cacheInstance;
+    }
+
     /**
      * If the cache is used
      * 
      * @return bool
      */
-    public function has()
+    public static function has()
     {
-        return !!Registry::get(
-            'cache',
-            Registry::OPTIONS
-        );
+        return !!Registry::get('cache', Registry::OPTIONS, false);
     }
 
     /**
-     * If the cache file exists
+     * If the cache exists
      * 
      * @return bool
      */
-    public function exists()
+    public static function exists()
     {
-        return !!file_exists($this->output());
+        return self::getCacheInstance()->has('configuration');
     }
 
     /**
-     * Path to the output cache file
+     * Path to the output cache file (for compatibility)
      * 
      * @return string
      */
-    public function output()
+    public static function output()
     {
-        $path = Registry::get(
-            'cachePath',
-            Registry::OPTIONS
-        );
-
-        return $path . 'cache.config.php';
+        $path = Registry::get('cachePath', Registry::OPTIONS, '/tmp/cache');
+        return $path . '/cache.config.php';
     }
 
     /**
-     * Load the configuration cache file
+     * Load the configuration from cache
      * 
      * @return void
      */
-    public function load()
+    public static function load()
     {
-        $config = array();
+        $config = self::getCacheInstance()->get('configuration');
 
-        if ($this->exists()) {
-            $config = require_once($this->output());
-
+        if ($config && is_array($config)) {
             Registry::preset(
-                $config[Registry::OPTIONS],
-                $config[Registry::CONFIG],
-                $config[Registry::ENV]
+                $config[Registry::OPTIONS] ?? [],
+                $config[Registry::CONFIG] ?? [],
+                $config[Registry::ENV] ?? []
             );
         }
     }
 
     /**
-     * Create a configuration cache file
+     * Create a configuration cache
      * 
      * @return bool
      */
-    public function create()
+    public static function create()
     {
-        $content = '<?php' . PHP_EOL;
-        $content .= PHP_EOL .
-            "/*" . PHP_EOL .
-            "\tThe current file is generated automatically," . PHP_EOL .
-            "\tdo not make changes to it as they will be lost." . PHP_EOL .
-            "\tDelete the file and it will be recreated according to your configuration." . PHP_EOL .
-            "*/"  . PHP_EOL;
-        $content .= 'return ';
-        $content .= var_export(
-            Registry::getAll(),
-            true
-        );
-        $content .= ';';
-        $status = true;
-        $file = $this->output();
-        $directory = dirname($file);
-        $isDebug = Registry::get(
-            'debug',
-            Registry::OPTIONS
-        );
+        $config = Registry::getAll();
+        $cacheTtl = Registry::get('cacheTtl', Registry::OPTIONS, 3600);
 
-        if (!is_dir($directory)) {
-            if (!@mkdir($directory, 0775, true)) {
-                if ($isDebug)
-                    throw new \Exception('Failed to create directory: ' . $directory);
+        return self::getCacheInstance()->set('configuration', $config, $cacheTtl);
+    }
 
-                $status = false;
-            }
-        }
+    /**
+     * Clear configuration cache
+     * 
+     * @return bool
+     */
+    public static function clear()
+    {
+        return self::getCacheInstance()->delete('configuration');
+    }
 
-        if (!@file_put_contents($file, $content)) {
-            if ($isDebug)
-                throw new \Exception('Failed to create file: ' . $$file);
-
-            $status = false;
-        }
-
-        return $status;
+    /**
+     * Get cache storage path
+     * 
+     * @return string
+     */
+    public static function getStoragePath()
+    {
+        return self::getCacheInstance()->getDriver()->getStoragePath();
     }
 }

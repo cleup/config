@@ -1,6 +1,6 @@
 {
     "name": "cleup/config",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Web application configuration",
     "keywords": [
         "config",
@@ -13,7 +13,7 @@
     "homepage": "https://github.com/cleup/config",
     "autoload": {
         "files": [
-            "src/Helpers.php"
+            "helpers.php"
         ],
         "psr-4": {
             "Cleup\\Configuration\\": "src/"
@@ -27,6 +27,7 @@
     ],
     "require": {
         "php": ">=8.1",
-        "cleup/store-manager": "^1.0"
+        "cleup/store-manager": "^1.0",
+        "cleup/cache": "^1.0"
     }
 }

@@ -2,8 +2,8 @@
 
 namespace Cleup\Configuration;
 
-use Cleup\Configuration\Components\Cache;
 use Cleup\Configuration\Components\Registry;
+use Cleup\Configuration\Components\Cache;
 use Cleup\Configuration\Environment\Env;
 
 class Loader
@@ -15,13 +15,13 @@ class Loader
      */
     private $options = array(
         'cache' => true,
-        'cachePath' => '',
+        'cachePath' => '/tmp/cache',
+        'cacheTtl' => 0,
         'configPath' => '',
         'env' => true,
         'envPath' => '',
         'debug' => false,
         'envTypes' => array(
-            'default' => '',
             'production' => [
                 'production' => 100
             ],
@@ -44,15 +44,9 @@ class Loader
             $options
         );
 
-        $this->filterPath(
-            'configPath',
-            'envPath',
-            'cachePath'
-        );
-
+        $this->filterPath('configPath', 'envPath', 'cachePath');
         Registry::preset($this->options);
     }
-
 
     /**
      * Filter path
@@ -62,9 +56,7 @@ class Loader
     private function filterPath(...$names)
     {
         foreach ($names as $name) {
-            $this->options[$name] = rtrim(
-                rtrim($this->options[$name], '\\')
-            ) . '/';
+            $this->options[$name] = rtrim(rtrim($this->options[$name], '\\')) . '/';
         }
     }
 
@@ -87,22 +79,34 @@ class Loader
     public function load()
     {
         if ($this->options['cache']) {
-            $cache = new Cache();
-
-            if ($cache->has()) {
-                if ($cache->exists())
-                    $cache->load();
-                else {
+            if (Cache::has()) {
+                if (Cache::exists()) {
+                    Cache::load();
+                } else {
                     $this->scan();
-
-                    if ($cache->create())
-                        $cache->load();
+                    if (Cache::create()) {
+                        Cache::load();
+                    }
                 }
-            } else
+            } else {
                 $this->scan();
-        } else
+            }
+        } else {
             $this->scan();
+        }
 
+        Env::write();
+    }
+
+    /**
+     * Reload configuration (bypass cache)
+     * 
+     * @return void
+     */
+    public function reload()
+    {
+        Cache::clear();
+        $this->scan();
         Env::write();
     }
 }

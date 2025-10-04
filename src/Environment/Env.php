@@ -6,6 +6,21 @@ use Cleup\Configuration\Components\Registry;
 
 class Env
 {
+    private static ?Parser $parser = null;
+
+    /**
+     * Get parser instance
+     * 
+     * @return Parser
+     */
+    private static function getParser(): Parser
+    {
+        if (self::$parser === null) {
+            self::$parser = new Parser();
+        }
+        return self::$parser;
+    }
+
     /**
      * Make changes to the environment
      * 
@@ -13,10 +28,7 @@ class Env
      */
     public static function write()
     {
-        $env = Registry::get(
-            false,
-            Registry::ENV
-        );
+        $env = Registry::get(false, Registry::ENV);
 
         foreach ($env as $key => $value) {
             $_ENV[$key] = $value;
@@ -34,32 +46,23 @@ class Env
     {
         $filePath = '';
 
-        $types = Registry::get(
-            'envTypes',
-            Registry::OPTIONS
-        );
+        $types = Registry::get('envTypes', Registry::OPTIONS);
+        $path = Registry::get('envPath', Registry::OPTIONS);
+        $isDev = Registry::get('debug', Registry::OPTIONS);
 
-        $path =  Registry::get(
-            'envPath',
-            Registry::OPTIONS
-        );
-
-        $isDev = Registry::get(
-            'debug',
-            Registry::OPTIONS
-        );
-
-        $type =  $types[$isDev ? "local" : "production"];
+        $type = $types[$isDev ? "local" : "production"];
 
         if (is_array($type)) {
             $name = array_search(min($type), $type);
 
-            if (file_exists($path . '.env.' . $name))
+            if (file_exists($path . '.env.' . $name)) {
                 $filePath = $path . '.env.' . $name;
+            }
         }
 
-        if (empty($filePath) && file_exists($path . '.env'))
+        if (empty($filePath) && file_exists($path . '.env')) {
             $filePath = $path . '.env';
+        }
 
         return $filePath;
     }
@@ -72,13 +75,13 @@ class Env
     public static function load(): void
     {
         $path = static::find();
-        $parser = new Parser();
+        
+        if (empty($path)) {
+            return;
+        }
 
-        Registry::set(
-            false,
-            $parser->parse($path),
-            Registry::ENV
-        );
+        $parser = self::getParser();
+        Registry::set(false, $parser->parse($path), Registry::ENV);
     }
 
     /**
@@ -90,11 +93,7 @@ class Env
      */
     public static function get($key = '', $default = null)
     {
-        return Registry::get(
-            $key,
-            Registry::ENV,
-            $default
-        );
+        return Registry::get($key, Registry::ENV, $default);
     }
 
     /**
@@ -106,10 +105,27 @@ class Env
      */
     public static function set($key, $value)
     {
-        Registry::set(
-            $key,
-            $value,
-            Registry::ENV
-        );
+        Registry::set($key, $value, Registry::ENV);
+    }
+
+    /**
+     * Check if environment variable exists
+     * 
+     * @param string $key
+     * @return bool
+     */
+    public static function has($key): bool
+    {
+        return Registry::get($key, Registry::ENV) !== null;
+    }
+
+    /**
+     * Get all environment variables
+     * 
+     * @return array
+     */
+    public static function all(): array
+    {
+        return Registry::get(false, Registry::ENV, []);
     }
 }
